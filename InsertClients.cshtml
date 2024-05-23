@@ -1,0 +1,412 @@
+﻿@model Caisse.Models.Clients_t
+
+@{
+    ViewBag.Title = "InsertClients";
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+
+    <body id="body_insert">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <br />
+
+        <div class="flex_mother_InsertClient1">
+            <div class="flex_child">
+                @Html.LabelFor(model => model.cliNom, "Nom", htmlAttributes: new { @class = "label" })
+                @Html.EditorFor(model => model.cliNom, new { htmlAttributes = new { @class = "input", @id = "nom" } })
+            </div>
+
+            <div style="flex:1 1 40%;text-align:left; padding-left:8px">
+                @Html.ValidationMessageFor(model => model.cliNom, "", new { @class = "text-danger" })
+            </div>
+
+        </div>
+
+        <br />
+
+        <div class="flex_mother_InsertClient2">
+            <div class="flex_child">
+                @Html.LabelFor(model => model.cliPrenom, "Prénom", htmlAttributes: new { @class = "label" })
+                @Html.EditorFor(model => model.cliPrenom, new { htmlAttributes = new { @class = "input", @id = "prenom" } })
+            </div>
+            <div style="flex:1 1 40%; text-align:left;padding-left:8px">
+                @Html.ValidationMessageFor(model => model.cliPrenom, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <br />
+
+        <div class="flex_mother_InsertClient3">
+            <div class="flex_child">
+                @Html.LabelFor(model => model.SelectedCommune, "Localisation", htmlAttributes: new { @class = "label" })
+                @Html.DropDownListFor(m => m.SelectedCommune, Model.ListeCommunes, htmlAttributes: new { @class = "select2" })
+@*                @Html.DropDownListFor(m => m.Recherche.SelectedCommune, Model.Recherche.ListeCommunes, htmlAttributes: new { @class = "select2" })*@
+                <ul id="autocompletedlist"></ul>
+            </div>
+            <div>
+                @Html.ValidationMessageFor(model => model.SelectedCommune, "", new { @class = "text-danger" })
+            </div>
+
+        </div>
+
+        <br />
+
+        <div class="flex_mother_InsertClient6">
+            <div class="flex_child">
+                @Html.LabelFor(model => model.cliNumGRC, "N° GRC", htmlAttributes: new { @class = "label" })
+                @Html.EditorFor(model => model.cliNumGRC, new { htmlAttributes = new { @class = "inputGrc", @id = "grcId", @onblur = "validateNumGrc('grcId')" } })
+            </div>
+            <div style="flex:1 1 40%; text-align:left;padding-left:8px">
+                <div id="lettreInterditeGrc">Le numéro GRC doit être un nombre</div>
+                <div id="longueurGrc">Le numéro GRC doit faire 8 caractères</div>
+                <div id="inputVideGrc">Merci de renseigner un n° GRC</div>
+                @Html.ValidationMessageFor(model => model.cliNumGRC, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <br />
+
+        <div class="flex_mother_InsertClient7">
+            <div class="flex_child">
+                @Html.LabelFor(model => model.Sigma[0], "N° Sigma", htmlAttributes: new { @class = "label" })
+                @Html.EditorFor(model => model.Sigma[0], new { htmlAttributes = new { @class = "inputSigma", @id = "numSigmaId", @onblur = "validateNumSigma('numSigmaId')" } })
+            </div>
+            <div style="flex:1 1 40%; text-align:left;padding-left:8px">
+                <div id="lettreInterditeSigma">Le numéro Sigma doit être un nombre</div>
+                <div id="longueurSigma">Le numéro Sigma doit faire 8 caractères</div>
+                <div id="inputVideSigma">Merci de renseigner un n° Sigma</div>
+                @Html.ValidationMessageFor(model => model.Sigma, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <br />
+
+        <div class="flex_mother_InsertClient8">
+            <div class="flex_child">
+                @Html.LabelFor(model => model.cliPart, "Particulier", htmlAttributes: new { @class = "label" })
+                @Html.CheckBoxFor(model => model.cliPart, new { htmlAttributes = new { @class = "inputParticulier", @id = "particulier" } })
+            </div>
+            <div style="flex:1 1 40%; text-align:left;padding-left:8px">
+                @Html.ValidationMessageFor(model => model.cliPart, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <br />
+
+        <div class="flex_mother_InsertClient9">
+            <div class="flex_child">
+                @Html.LabelFor(model => model.cliTotContratIARD, "Total cotisations IARD", htmlAttributes: new { @class = "label" })
+                @Html.EditorFor(model => model.cliTotContratIARD, new { htmlAttributes = new { @class = "inputIard", @id = "numIard", @onblur = "validateNumIard('numIard')" } })
+            </div>
+            <div style="flex:1 1 40%; text-align:left;padding-left:8px">
+                <div id="lettreInterditeIard">Une cotisation est en chiffre</div>
+                <div id="inputVideIard">Merci de renseigner un montant</div>
+                @Html.ValidationMessageFor(model => model.cliTotContratIARD, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <br />
+
+        <div class="flex_child_btn">
+            <div>
+                <button type="button" name="btn_Annuler" onclick="window.location.href='/Home/Index'" class="button">Annuler</button>
+                <input id="idButton" type="submit" value="Créer" class="button" />
+            </div>
+        </div>
+        <br />
+    </body>
+}
+
+<script>
+
+    function validateNumGrc(grcId) {
+        var longueurElementGrc = document.getElementById("longueurGrc");
+        var lettreInterditeElementGrc = document.getElementById("lettreInterditeGrc");
+        var inputVideElementGrc = document.getElementById("inputVideGrc");
+
+        var numGrcValue = document.getElementById(grcId).value;
+
+        var isLengthValid = numGrcValue.length === 8 || numGrcValue.length === 0;
+        var isNumeric = /^[0-9]+$/.test(numGrcValue);
+        var isNull = grcId.trim() === "";
+
+        if (!isLengthValid && !isNumeric) {
+
+            longueurElementGrc.style.display = 'none';
+
+            lettreInterditeElementGrc.style.display = 'block';
+
+            inputVideElementGrc.style.display = 'none';
+
+        } else if (!isLengthValid && !isNull) {
+
+            longueurElementGrc.style.display = 'block';
+
+            lettreInterditeElementGrc.style.display = 'none';
+
+            inputVideElementGrc.style.display = 'none';
+
+        } else if (!isNumeric && !isNull) {
+
+            longueurElementGrc.style.display = 'none';
+
+            lettreInterditeElementGrc.style.display = 'none';
+
+            inputVideElementGrc.style.display = 'block';
+        }
+
+        else {
+
+            longueurElementGrc.style.display = isLengthValid ? 'none' : 'block';
+
+            lettreInterditeElementGrc.style.display = isNumeric ? 'none' : 'block';
+
+            inputVideElementGrc.style.display = isNull ? 'none' : 'block';
+        }
+    }
+
+    function validateNumSigma(numSigmaId) {
+        var longueurElementSigma = document.getElementById("longueurSigma");
+        var lettreInterditeElementSigma = document.getElementById("lettreInterditeSigma");
+        var inputVideElementSigma = document.getElementById("inputVideSigma");
+
+        var numSigmaValue = document.getElementById(numSigmaId).value;
+
+        var isLengthValid = numSigmaValue.length === 8 || numSigmaValue.length === 0;
+        var isNumeric = /^[0-9]+$/.test(numSigmaValue);
+        var isNull = numSigmaId.trim() === "";
+
+        if (!isLengthValid && !isNumeric) {
+
+            longueurElementSigma.style.display = 'none';
+
+            lettreInterditeElementSigma.style.display = 'block';
+
+            inputVideElementSigma.style.display = 'none';
+
+        } else if (!isLengthValid && !isNull) {
+
+            longueurElementSigma.style.display = 'block';
+
+            lettreInterditeElementSigma.style.display = 'none';
+
+            inputVideElementSigma.style.display = 'none';
+
+        } else if (!isNumeric && !isNull) {
+
+            longueurElementSigma.style.display = 'none';
+
+            lettreInterditeElementSigma.style.display = 'none';
+
+            inputVideElementSigma.style.display = 'block';
+
+        } else {
+
+            longueurElementSigma.style.display = isLengthValid ? 'none' : 'block';
+
+            lettreInterditeElementSigma.style.display = isNumeric ? 'none' : 'block';
+
+            inputVideElementSigma.style.display = isNull ? 'none' : 'block';
+
+        }
+    }
+
+    function validateNumIard(numIard) {
+        var lettreInterditeElementIard = document.getElementById("lettreInterditeIard");
+        var inputVideElementIard = document.getElementById("inputVideIard");
+
+        var numIardValue = document.getElementById(numIard).value;
+
+        var isNumeric = /^[0-9]+$/.test(numIardValue);
+        var isNull = numIardValue.trim() === "";
+
+        if (isNull && !isNumeric) {
+
+            lettreInterditeElementIard.style.display = 'none';
+
+            inputVideElementIard.style.display = 'block';
+
+            console.log("premier if");
+
+        } else if (isNull) {
+
+            lettreInterditeElementIard.style.display = 'none'
+
+            inputVideElementIard.style.display = 'block';
+
+            console.log("deuxième if");
+
+        } else if (!isNumeric) {
+
+            lettreInterditeElementIard.style.display = 'block'
+
+            inputVideElementIard.style.display = 'none';
+
+            console.log("troisième if");
+
+        } else {
+
+            longueurElementIard.style.display = isLengthValid ? 'none' : 'block';
+
+            lettreInterditeElementIard.style.display = isNumeric ? 'none' : 'block';
+
+            inputVideElementIard.style.display = isNull ? 'none' : 'block';
+
+            console.log("else final");
+
+        }
+    }
+
+
+    document.addEventListener("keydown", refuserCreationEntrer);
+
+    // A placer
+    function refuserCreationEntrer(event) {
+        var elementsInput = document.getElementsByClassName("input");
+        var contenuGrc = document.getElementById("grcId").value.trim();
+        var contenuSigma = document.getElementById("numSigmaId").value.trim();
+        var contenuIard = document.getElementById("numIard").value.trim();
+        var isEmpty = false
+
+        for (var i = 0; i < elementsInput.length; i++) {
+            var contenu = elementsInput[i].value.trim();
+            if (contenu === "") {
+                isEmpty === true;
+                break;
+            }
+
+
+        }
+
+        var longueurElementGrc = document.getElementById("longueurGrc");
+        var lettreInterditeElementGrc = document.getElementById("lettreInterditeGrc");
+        var longueurElementSigma = document.getElementById("longueurSigma");
+        var lettreInterditeElementSigma = document.getElementById("lettreInterditeSigma");
+        var lettreInterditeElementIard = document.getElementById("lettreInterditeIard");
+
+        if ((event.keyCode === 13) && (
+            (longueurElementGrc.style.display === 'block') ||
+            (lettreInterditeElementGrc.style.display === 'block') ||
+            (longueurElementSigma.style.display === 'block') ||
+            (lettreInterditeElementSigma.style.display === 'block') ||
+            (lettreInterditeElementIard.style.display === 'block') ||
+            (isEmpty === true) || (contenuGrc === "") || (contenuSigma === "") || (contenuIard === ""))) {
+            event.preventDefault();
+
+        } else {
+
+        }
+
+    }
+
+
+
+
+    // Ajouter l'écouteur d'événements focus une seule fois au chargement de la page
+
+    var monBouton = document.getElementById('idButton');
+    monBouton.addEventListener('focus', refuserCreation);
+
+    function refuserCreation() {
+        var elementsInput = document.getElementsByClassName("input");
+
+        for (var i = 0; i < elementsInput.length; i++) {
+            var contenu = elementsInput[i].value.trim();
+        }
+
+        var longueurElementGrc = document.getElementById("longueurGrc");
+        var lettreInterditeElementGrc = document.getElementById("lettreInterditeGrc");
+        var longueurElementSigma = document.getElementById("longueurSigma");
+        var lettreInterditeElementSigma = document.getElementById("lettreInterditeSigma");
+        var lettreInterditeElementIard = document.getElementById("lettreInterditeIard");
+
+        if ((lettreInterditeElementIard.style.display === 'block') ||
+            (longueurElementSigma.style.display === 'block') ||
+            (longueurElementGrc.style.display === 'block') ||
+            (lettreInterditeElementSigma.style.display === 'block') ||
+            (lettreInterditeElementGrc.style.display === 'block') ||
+            (contenu === "")) {
+            monBouton.disabled = true;
+            setTimeout(function () {
+                monBouton.disabled = false;
+            }, 3000);
+        } else {
+            monBouton.disabled = false;
+        }
+    }
+
+    function undisplay_liste_commune() {
+        setTimeout(function () {
+            document.getElementById('autocompletedlist').style.display = 'none';
+        }, 100);
+    }
+
+    function display_liste_commune(field) {
+        var base = sessionStorage.getItem("communes");
+        var new_base = base.split('/');
+        var name = field.value.toLocaleLowerCase();
+        var auto_comp = document.getElementById('autocompletedlist');
+        auto_comp.innerHTML = '';
+        var suggestions = new_base.filter(commune => commune.toLocaleLowerCase().includes(name));
+
+        if (name !== "") {
+            auto_comp.style.display = 'block';
+            suggestions.forEach((commune, index) => {
+                if (commune.toLocaleLowerCase().startsWith(name)) {
+                    const element = document.createElement('li');
+                    element.textContent = commune;
+                    element.classList = "li";
+                    element.onclick = function () {
+                        field.value = commune.split('-')[0];
+                        document.getElementById("cp").value = commune.split('-')[1];
+                        auto_comp.style.display = 'none';
+                    }
+                    auto_comp.appendChild(element);
+                }
+            });
+            var currentIndex = auto_com.children.length - 1;
+            updateSelection();
+        } else {
+            auto_comp.style.display = 'none';
+        }
+
+        field.addEventListener('keydown', function (event) {
+            if (event.keyCode === 38) { // Touche haut
+                event.preventDefault();
+                currentIndex = (currentIndex > 0) ? currentIndex - 1 : suggestions.length - 1;
+                updateSelection();
+            } else if (event.keyCode === 40) { // Touche bas
+                event.preventDefault();
+                currentIndex = (currentIndex < suggestions.length - 1) ? currentIndex + 1 : 0;
+                updateSelection();
+            } else if (event.keyCode === 13) { // Touche entrée
+                event.preventDefault();
+                if (currentIndex >= 0 && currentIndex < suggestions.length) {
+                    var selectedCommune = suggestions[currentIndex].split('-')[0];
+                    var selectedCP = suggestions[currentIndex].split('-')[1];
+                    field.value = selectedCommune;
+                    document.getElementById("cp").value = selectedCP;
+                    auto_comp.style.display = 'none';
+                }
+            }
+        });
+
+        function updateSelection() {
+            auto_comp.querySelectorAll('.li').forEach(function (element, index) {
+                if (index === currentIndex) {
+                    element.classList.add('selected');
+                    element.focus(); // Déplacer le focus vers l'élément sélectionné
+                } else {
+                    element.classList.remove('selected');
+                }
+            });
+        }
+    }
+</script>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
