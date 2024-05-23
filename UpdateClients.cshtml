@@ -1,0 +1,224 @@
+﻿@model Caisse.Models.Clients_t
+
+@{
+    ViewBag.Title = "UpdateClients";
+    if (Model.Sigma.Count == 0)
+    {
+        Model.Sigma.Add("-");
+    }
+    Model.Sigma.Add("Nouveau");
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+<body id="body_update">
+    @*<div class="background flex_box_column">*@
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+    <br /><br />
+
+    <div class="flex_child_grand_mother">
+        <div class="flex_mother_1">
+            <div class="flex_child">
+                <div>
+                    @Html.LabelFor(model => model.cliNom, "Nom", htmlAttributes: new { @class = "label" })
+                    @Html.EditorFor(model => model.cliNom, new { htmlAttributes = new { @class = "input_gauche", @id = "NOM", @tabindex = "1" } })
+                </div>
+                <div style="flex:1 1 40%;text-align:left; padding-left:8px">
+                    @Html.ValidationMessageFor(model => model.cliNom, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="flex_child">
+                <div>
+                    @Html.LabelFor(model => model.cliNumGRC, "N° GRC", htmlAttributes: new { @class = "label" })
+                    @Html.EditorFor(model => model.cliNumGRC, new { htmlAttributes = new { @class = "input_droite", @id = "grc", @readonly = "readonly", @tabindex = "6" } })
+                </div>
+                <div style="flex:1 1 40%; text-align:left;padding-left:8px">
+                    @Html.ValidationMessageFor(model => model.cliNumGRC, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        <br /><br />
+
+        <div class="flex_mother_2">
+            <div class="flex_child">
+                <div>
+                    @Html.LabelFor(model => model.cliPrenom, "Prénom", htmlAttributes: new { @class = "label" })
+                    @Html.EditorFor(model => model.cliPrenom, new { htmlAttributes = new { @class = "input_gauche", @id = "PRENOM", @tabindex = "2" } })
+                </div>
+
+                <div style="flex:1 1 40%; text-align:left;padding-left:8px">
+                    @Html.ValidationMessageFor(model => model.cliPrenom, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="flex_child">
+                <div>
+                    @Html.LabelFor(model => model.Sigma, "N° Sigma", htmlAttributes: new { @class = "label" })
+                    @Html.DropDownListFor(model => model.Sigma, new SelectList(Model.Sigma.ToArray()), htmlAttributes: new { @class = "input_droite", @id = "NumSigma", @tabindex = "7", data_url = Url.Action("create_NUMSigma", "Popup", new { id = Model.IDClient }) })
+                </div>
+                <div style="flex:1 1 40%; text-align:left;padding-left:8px">
+                    @Html.ValidationMessageFor(model => model.Sigma, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        <br /><br />
+
+        <div class="flex_mother_3">
+            <div class="flex_child">
+                <div>
+                    @Html.LabelFor(model => model.SelectedCommune, "Commune", htmlAttributes: new { @class = "label" })
+                    @Html.EditorFor(model => model.SelectedCommune, new { htmlAttributes = new { @class = "input_gauche", @id = "Commune", @oninput = "display_liste_commune(this)", @onfocus = "display_liste_commune(this);", @onblur = "undisplay_liste_commune();", @tabindex = "3" } })@*, @onblur= "document.getElementById('autocompletedlist').style.display='none';", @onfocus = "document.getElementById('autocompletedlist').style.display='block';"*@
+                    <ul id="autocompletedlist_update"></ul>
+                </div>
+                <div style="flex:1 1 40%; text-align:left;padding-left:8px">
+                    @Html.ValidationMessageFor(model => model.SelectedCommune, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="flex_child">
+                <div>
+                    @Html.LabelFor(model => model.cliPart, "Particulier", htmlAttributes: new { @class = "label" })
+                    @Html.CheckBoxFor(model => model.cliPart, new { @class = "input_droite_case", @id = "case", disabled = "disabled", @tabindex = "8" })
+                </div>
+                <div style="flex:1 1 40%; text-align:left;padding-left:8px">
+                    @Html.ValidationMessageFor(model => model.cliPart, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        <br /><br />
+
+        <div class="flex_mother_4">
+            <div>
+                <div class="flex_child">
+                    @Html.LabelFor(model => model.cliCP, "Code Postal", htmlAttributes: new { @class = "label" })
+                    @Html.EditorFor(model => model.cliCP, new { htmlAttributes = new { @class = "input_gauche", @id = "CP", @tabindex = "4" } })
+                </div>
+                <div style="flex:1 1 40%; text-align:left;padding-left:8px">
+                    @Html.ValidationMessageFor(model => model.cliCP, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="flex_child">
+                @Html.LabelFor(model => model.cliTotContratIARD, "Montant total des cotisations IARD", htmlAttributes: new { @class = "label_iard", @tabindex = "9" })
+            </div>
+        </div>
+
+        <br /><br />
+
+        <div class="flex_mother_5">
+            <div class="flex_child">
+                <div>
+                    @Html.LabelFor(model => model.cliPays, "Pays", htmlAttributes: new { @class = "label" })
+                    @Html.EditorFor(model => model.cliPays, new { htmlAttributes = new { @class = "input_gauche", @id = "PAYS", @tabindex = "5" } })
+                </div>
+                <div style="position: absolute;">
+                    @Html.ValidationMessageFor(model => model.cliPays, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="flex_child">
+                <div>
+                    @Html.EditorFor(model => model.cliTotContratIARD, new { htmlAttributes = new { @class = "input_droite", @id = "input_iard", @readonly = "readonly", @tabindex = "10" } })
+                </div>
+                <div @*style="flex:1 1 40%; text-align:left;padding-left:8px"*@>
+                    @Html.ValidationMessageFor(model => model.cliTotContratIARD, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        <br /><br />
+
+        <div class="flex_child_btn">
+            <div>
+                <button type="button" tabindex="11" name="btn_Annuler" onclick="history.go(-(parseInt(sessionStorage.getItem('nbr_creation')) + 1))" class="button">Annuler</button>
+                <input type="submit" tabindex="12" value="Appliquer" class="button" />
+            </div>
+        </div>
+        <br />
+    </div>
+</body>
+}
+<div id="creation_sigma" title="Création N°Sigma" style="display:none; background-color:white">
+    <p>Entrer le nouveau numéro Sigma:</p>
+    <input id="new_num_sigma" type="number" />
+</div>
+
+
+<script>
+    function undisplay_liste_commune() {
+        setTimeout(function () {
+            document.getElementById('autocompletedlist_update').style.display = 'none';
+        }, 100);
+    }
+
+    function display_liste_commune(field) {
+        var base = sessionStorage.getItem("communes");
+        var new_base = base.split('/');
+        var name = field.value.toLocaleLowerCase();
+        var auto_comp = document.getElementById('autocompletedlist_update');
+        auto_comp.innerHTML = '';
+        var suggestions = new_base.filter(commune => commune.toLocaleLowerCase().includes(name));
+
+        if (name !== "") {
+            auto_comp.style.display = 'block';
+            suggestions.forEach((commune, index) => {
+                if (commune.toLocaleLowerCase().startsWith(name)) {
+                    const element = document.createElement('li');
+                    element.textContent = commune;
+                    element.classList = "li";
+                    element.onclick = function () {
+                        field.value = commune.split('-')[0];
+                        document.getElementById("cp").value = commune.split('-')[1];
+                        auto_comp.style.display = 'none';
+                    }
+                    auto_comp.appendChild(element);
+                }
+            });
+            var currentIndex = auto_com.children.length - 1;
+            updateSelection();
+        } else {
+            auto_comp.style.display = 'none';
+        }
+
+        field.addEventListener('keydown', function (event) {
+            if (event.keyCode === 38) {
+                event.preventDefault();
+                currentIndex = (currentIndex > 0) ? currentIndex - 1 : suggestions.length - 1;
+                updateSelection();
+            } else if (event.keyCode === 40) {
+                event.preventDefault();
+                currentIndex = (currentIndex < suggestions.length - 1) ? currentIndex + 1 : 0;
+                updateSelection();
+            } else if (event.keyCode === 13) {
+                event.preventDefault();
+                if (currentIndex >= 0 && currentIndex < suggestions.length) {
+                    var selectedCommune = suggestions[currentIndex].split('-')[0];
+                    var selectedCP = suggestions[currentIndex].split('-')[1];
+                    field.value = selectedCommune;
+                    document.getElementById("cp").value = selectedCP;
+                    auto_comp.style.display = 'none';
+                }
+            }
+        });
+
+        function updateSelection() {
+            auto_comp.querySelectorAll('.li').forEach(function (element, index) {
+                if (index === currentIndex) {
+                    element.classList.add('selected');
+                    element.focus();
+                } else {
+                    element.classList.remove('selected');
+                }
+            });
+        }
+    }
+</script>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
